@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8" />
+
+<style id="webmakerstyle">
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* VARIABLES (para que puedas cambiar colores fácil) */
+:root {
+    --bg-main: #212225;
+    --bg-sidebar: #202123;
+    --bg-chat: #444654;
+    --bg-input: #40414f;
+    --color-text: #ececf1;
+    --color-muted: #9ca3af;
+    --accent: #19c37d;
+}
+
+/* BASE */
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: var(--bg-main);
+    color: var(--color-text);
+}
+
+/* LAYOUT */
+#app {
+    display: flex;
+    height: 100vh;
+}
+
+/* SIDEBAR */
+#sidebar {
+    width: 260px;
+    background: var(--bg-sidebar);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+#logo h2 {
+    font-size: 18px;
+}
+
+#logo p {
+    font-size: 12px;
+    color: var(--color-muted);
+}
+
+#newChatBtn {
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #3c3d46;
+    background: transparent;
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#newChatBtn:hover {
+    background: #2a2b32;
+}
+
+#chat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.chat-item {
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.chat-item:hover {
+    background: #2a2b32;
+}
+
+.chat-item.active {
+    background: #343541;
+}
+
+/* MAIN */
+#main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* HEADER */
+#header {
+    padding: 20px;
+    border-bottom: 1px solid #444654;
+}
+
+#header h1 {
+    font-size: 18px;
+}
+
+#status {
+    font-size: 12px;
+    color: var(--color-muted);
+}
+
+/* CHAT */
+#chat-section {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+}
+
+/* MENSAJES */
+#messages {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* MENSAJE */
+.message {
+    display: flex;
+    gap: 12px;
+    max-width: 800px;
+}
+
+/* AVATAR */
+.avatar {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: #555;
+    flex-shrink: 0;
+}
+
+/* CONTENIDO */
+.content {
+    background: var(--bg-chat);
+    padding: 12px 16px;
+    border-radius: 10px;
+    line-height: 1.5;
+}
+
+/* INPUT */
+#input-container {
+    padding: 15px;
+    border-top: 1px solid #444654;
+    background: var(--bg-main);
+}
+
+/* CAJA INPUT */
+#input-box {
+    display: flex;
+    gap: 10px;
+}
+
+/* INPUT */
+#input {
+    flex: 1;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    background: var(--bg-input);
+    color: white;
+    font-size: 14px;
+}
+
+#input::placeholder {
+    color: var(--color-muted);
+}
+
+/* BOTÓN */
+#sendBtn {
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: none;
+    background: var(--accent);
+    color: white;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+#sendBtn:hover {
+    background: #16a34a;
+}
+
+/* SUGERENCIAS */
+#suggestions {
+    margin-top: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.suggestion {
+    padding: 8px 12px;
+    border-radius: 20px;
+    border: 1px solid #565869;
+    background: transparent;
+    color: var(--color-muted);
+    cursor: pointer;
+    font-size: 12px;
+}
+
+.suggestion:hover {
+    background: #2a2b32;
+    color: white;
+}
+
+/* SCROLL */
+#chat-section::-webkit-scrollbar {
+    width: 6px;
+}
+
+#chat-section::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 10px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    #sidebar {
+        display: none;
+    }
+
+    #main {
+        width: 100%;
+    }
+}
+</style>
+</head>
+<body>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickFix Solutions.</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+<div id="app">
+
+    <!-- 🔹 SIDEBAR -->
+    <aside id="sidebar">
+        <div id="logo">
+            <h2>QuickFix Solutions.</h2>
+            <p>Soluciones rápidas y eficientes</p>
+        </div>
+
+        <button id="newChatBtn">+ Nuevo chat</button>
+
+        <div id="chat-list">
+            <div class="chat-item active">Chat 1</div>
+        </div>
+    </aside>
+
+    <!-- 🔹 CONTENEDOR PRINCIPAL -->
+    <main id="main">
+
+        <!-- HEADER -->
+        <header id="header">
+            <div>
+                <h1>Asistente Inteligente</h1>
+                <p id="status">Listo</p>
+            </div>
+        </header>
+
+        <!-- MENSAJES -->
+        <section id="chat-section">
+            <div id="messages"></div>
+        </section>
+
+        <!-- INPUT -->
+        <footer id="input-container">
+            <div id="input-box">
+                <input 
+                    type="text" 
+                    id="input" 
+                    placeholder="Pregúntame lo que sea..."
+                    autocomplete="off"
+                >
+
+                <button id="sendBtn">Enviar</button>
+            </div>
+        </footer>
+
+    </main>
+
+</div>
+
+<!-- 🔹 TEMPLATE MENSAJES (para JS) -->
+<template id="message-template">
+    <div class="message">
+        <div class="avatar"></div>
+        <div class="content"></div>
+    </div>
+</template>
+
+</body>
+</html>
+
+
+<script src="https://unpkg.com/kontra@4.0.0/dist/core.js"></script>
+<script src="https://unpkg.com/kontra@4.0.0/dist/sprite.js"></script>
+<script src="https://unpkg.com/kontra@4.0.0/dist/gameLoop.js"></script>
+<script src="https://unpkg.com/kontra@4.0.0/dist/pointer.js"></script>
+<script src="https://unpkg.com/kontra@4.0.0/dist/keyboard.js"></script><script>// ===============================
+// ELEMENTOS
+// ===============================
+const input = document.getElementById("input");
+const sendBtn = document.getElementById("sendBtn");
+const messages = document.getElementById("messages");
+const statusText = document.getElementById("status");
+const template = document.getElementById("message-template");
+
+// ===============================
+// EVENTOS
+// ===============================
+sendBtn.addEventListener("click", sendMessage);
+input.addEventListener("keypress", e => {
+    if (e.key === "Enter") sendMessage();
+});
+
+document.querySelectorAll(".suggestion").forEach(btn => {
+    btn.onclick = () => {
+        input.value = btn.textContent;
+        sendMessage();
+    };
+});
+
+// ===============================
+// MENSAJES
+// ===============================
+function addMessage(text, type = "bot") {
+    const clone = template.content.cloneNode(true);
+    const msg = clone.querySelector(".message");
+    const content = clone.querySelector(".content");
+
+    msg.classList.add(type);
+    content.innerHTML = text;
+
+    messages.appendChild(clone);
+    messages.scrollTop = messages.scrollHeight;
+}
+
+// ===============================
+// DETECTOR AVANZADO
+// ===============================
+function detectarTipo(text) {
+    text = text.toLowerCase();
+
+    if (/clima|temperatura|tiempo/.test(text)) return "clima";
+    if (/pel[ií]cula|serie|actor/.test(text)) return "pelicula";
+    if (/bitcoin|crypto|criptomoneda|precio/.test(text)) return "crypto";
+    if (/pa[ií]s|capital|poblaci[oó]n/.test(text)) return "pais";
+    if (/libro|autor/.test(text)) return "libro";
+    if (/chiste|broma/.test(text)) return "chiste";
+    if (/consejo|ayuda/.test(text)) return "consejo";
+    if (/qu[eé] es|qui[eé]n es|definici[oó]n/.test(text)) return "definicion";
+
+    return "general";
+}
+
+// ===============================
+// ENVÍO
+// ===============================
+async function sendMessage() {
+    const query = input.value.trim();
+    if (!query) return;
+
+    addMessage(query, "user");
+    input.value = "";
+
+    statusText.textContent = "Pensando...";
+
+    let tipo = detectarTipo(query);
+    let respuesta = "";
+
+    try {
+        switch (tipo) {
+            case "clima": respuesta = await getClima(query); break;
+            case "pelicula": respuesta = await getPelicula(query); break;
+            case "crypto": respuesta = await getCrypto(); break;
+            case "pais": respuesta = await getPais(query); break;
+            case "libro": respuesta = await getLibro(query); break;
+            case "chiste": respuesta = await getChiste(); break;
+            case "consejo": respuesta = await getConsejo(); break;
+            case "definicion": respuesta = await getDefinicion(query); break;
+            default: respuesta = await getGeneral(query);
+        }
+    } catch {
+        respuesta = "Hubo un error 😢";
+    }
+
+    statusText.textContent = "Listo";
+    addMessage(respuesta, "bot");
+}
+
+// ===============================
+// DEFINICIONES (WIKI + DUCK)
+// ===============================
+async function getDefinicion(query) {
+    let r = await getGeneral(query);
+    return "📘 Definición:\n<br><br>" + r;
+}
+
+// ===============================
+// GENERAL (MEJORADO)
+// ===============================
+async function getGeneral(query) {
+    let respuestas = [];
+
+    // Wikipedia
+    try {
+        const res = await fetch(`https://es.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`);
+        if (res.ok) {
+            const data = await res.json();
+            if (data.extract) respuestas.push(`<b>${data.title}</b><br>${data.extract}`);
+        }
+    } catch {}
+
+    // DuckDuckGo
+    try {
+        const res = await fetch(`https://api.duckduckgo.com/?q=${query}&format=json&no_html=1`);
+        const data = await res.json();
+        if (data.AbstractText) respuestas.push(data.AbstractText);
+    } catch {}
+
+    if (respuestas.length > 0) {
+        return respuestas.join("<br><br>");
+    }
+
+    return generarRespuestaIA(query);
+}
+
+// ===============================
+// RESPUESTA HUMANA (FAKE IA)
+// ===============================
+function generarRespuestaIA(text) {
+    const respuestas = [
+        "No encontré info exacta, pero suena interesante 🤔",
+        "Podrías darme más detalles?",
+        "Estoy aprendiendo sobre eso 😅",
+        "Eso depende del contexto...",
+        "Buena pregunta 👀"
+    ];
+
+    return respuestas[Math.floor(Math.random() * respuestas.length)];
+}
+
+// ===============================
+// CHISTE
+// ===============================
+async function getChiste() {
+    const res = await fetch("https://v2.jokeapi.dev/joke/Any?lang=es");
+    const data = await res.json();
+
+    return data.type === "single"
+        ? data.joke
+        : `${data.setup}<br>${data.delivery}`;
+}
+
+// ===============================
+// CONSEJO
+// ===============================
+async function getConsejo() {
+    const res = await fetch("https://api.adviceslip.com/advice");
+    const data = await res.json();
+
+    return "💡 " + data.slip.advice;
+}
+
+// ===============================
+// (mantienes las otras funciones)
+// ===============================
+
+// clima, pais, libro, crypto, pelicula
+// (usa las mismas del código anterior)
+
+//# sourceURL=userscript.js
+</script>
+</body>
+</html>
